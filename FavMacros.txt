@@ -1,0 +1,267 @@
+TO MOVE INFO AFTER A ":" FROM ONE COLUMN TO THE NEXT 
+
+Sub SplitColumn()
+Dim rng As Range
+Dim r As Long
+Dim arrParts() As String
+Dim partNum As Long
+
+
+Set rng = Range("A1:A800")
+
+r = 2
+Do While r <= rng.Rows.Count
+    '## Split the value in column BB (54) by commas, store in array ##
+    arrParts = Split(rng(r, 1).Value, ":")
+    '## If there's more than one item in the array, add new lines ##
+    If UBound(arrParts) >= 1 Then
+        rng(r, 1).Value = arrParts(0)
+
+        '## Iterate over the items in the array ##
+        For partNum = 1 To UBound(arrParts)
+
+            '## update the part number in the new row ##'
+            rng(r, 2).Value = Trim(arrParts(partNum))
+
+            '## resize our range variable as needed ##
+            Set rng = rng.Resize(rng.Rows.Count + 1, rng.Columns.Count)
+
+        Next
+
+    End If
+'## increment the row counter variable ##
+r = r + 1
+Loop
+
+End Sub
+
+
+
+-----------------------------------------------------------------------
+TO SPLIT ROWS AT THE COMMA AND KEEP THE SAME INFO IN ALL OTHER COLUMNS 
+
+Sub SplitPartsRows()
+Dim rng As Range
+Dim r As Long
+Dim arrParts() As String
+Dim partNum As Long
+
+
+Set rng = Range("A1:BI13876")
+
+r = 2
+Do While r <= rng.Rows.Count
+    '## Split the value in column BB (54) by commas, store in array ##
+    arrParts = Split(rng(r, 54).Value, ",")
+    '## If there's more than one item in the array, add new lines ##
+    If UBound(arrParts) >= 1 Then
+        rng(r, 54).Value = arrParts(0)
+
+        '## Iterate over the items in the array ##
+        For partNum = 1 To UBound(arrParts)
+            '## Insert a new row ##'
+            '## increment the row counter variable ##
+            r = r + 1
+            rng.Rows(r).Insert Shift:=xlDown
+
+            '## Copy the row above ##'
+            rng.Rows(r).Value = rng.Rows(r - 1).Value
+
+            '## update the part number in the new row ##'
+            rng(r, 54).Value = Trim(arrParts(partNum))
+
+            '## resize our range variable as needed ##
+            Set rng = rng.Resize(rng.Rows.Count + 1, rng.Columns.Count)
+
+        Next
+
+    End If
+'## increment the row counter variable ##
+r = r + 1
+Loop
+
+End Sub
+
+
+-------------------------------------------------------------------
+TO HIGHLIGHT LAST OF DUPLICATES/UNIQUE VALUES 
+
+Sub runthis()
+
+
+Dim row As Integer
+
+Dim TestCell As String
+Dim first As String
+Dim Second As String
+
+Dim TestCell1 As String
+Dim lastcell As Integer
+
+Dim Report As Worksheet
+Set Report = Excel.Worksheets("060513")
+
+
+lastcell = Sheets("060513").Cells(ROWS.Count, "A").End(xlUp).row
+
+For row = 1 To lastcell
+    TestCell = "A" & CInt(row)
+    TestCell1 = "A" & (CInt(row) + 1)
+    first = Range(TestCell).Value
+    Second = Range(TestCell1).Value
+
+    If first <> Second Then
+        Report.Cells(row, 1).Interior.ColorIndex = 3
+
+    End If
+Next row
+End Sub
+--------------------------------------------------------------------
+TO HIGHLIGHT DUPLICATES IN ALTERNATING COLORS (GROUPING) 
+Sub ColourTheRows()
+   
+    Application.ScreenUpdating = False
+    Dim colors As Variant, SameData As String, i As Long, j As Integer
+    colors = Array(vbBlue, vbWhite)
+    SameData = Cells(1, 1)
+    For i = 1 To Cells(ROWS.Count, 1).End(xlUp).row
+        If Cells(i, 1) <> SameData Then
+            j = j + 1
+            SameData = Cells(i, 1)
+        End If
+        If j = 2 Then
+            j = 0
+        End If
+        ROWS(i).Select
+        With Selection.Interior
+            .Pattern = xlSolid
+            .PatternColorIndex = xlAutomatic
+            .Color = colors(j)
+            .TintAndShade = 0
+            .PatternTintAndShade = 0
+        End With
+    Next i
+    Application.ScreenUpdating = True
+End Sub
+ 
+-------------------------------------------------------------------------
+TO HIGHLIGHT COLUMNS K AND L GRAY IN VALUES AFTER THE FIRST DUPLICATE 
+Option Explicit
+
+Sub Highlight()
+    ReDim arr(Range("A" & ROWS.Count).End(xlUp).row - 1) As String
+    Dim i&
+    For i = 1 To Range("A" & ROWS.Count).End(xlUp).row
+        arr(i - 1) = Range("A" & i).Value
+    Next i
+    RemoveDuplicate arr
+    For i = LBound(arr) To UBound(arr)
+        Dim j&, cnt&
+        For j = 1 To Range("A" & ROWS.Count).End(xlUp).row
+            If StrComp(arr(i), CStr(Range("A" & j).Value), 1) = 0 Then
+                cnt = cnt + 1
+                If cnt > 1 Then
+                    Range("K" & j & ":L" & j).Interior.Color = RGB(136, 136, 136)
+                End If
+            End If
+        Next j
+        cnt = 0
+    Next i
+End Sub
+Sub RemoveDuplicate(ByRef StringArray() As String)
+    Dim lowBound$, UpBound&, A&, B&, cur&, tempArray() As String
+    If (Not StringArray) = True Then Exit Sub
+    lowBound = LBound(StringArray): UpBound = UBound(StringArray)
+    ReDim tempArray(lowBound To UpBound)
+    cur = lowBound: tempArray(cur) = StringArray(lowBound)
+    For A = lowBound + 1 To UpBound
+        For B = lowBound To cur
+            If LenB(tempArray(B)) = LenB(StringArray(A)) Then
+                If InStrB(1, StringArray(A), tempArray(B), vbBinaryCompare) = 1 Then Exit For
+            End If:
+        Next B
+        If B > cur Then cur = B: tempArray(cur) = StringArray(A):
+    Next A
+    ReDim Preserve tempArray(lowBound To cur): StringArray = tempArray
+End Sub
+--------------------------------------------------------------------------------------------
+TO HIGHLIGHT A DUPLICATE CELL'S WHOLE ROW 
+Option Explicit
+ 
+Sub Macro1()
+     
+     'http://www.ozgrid.com/forum/showthread.php?t=159766
+     
+    Dim lngLastRow As Long, _
+    lngLastCol As Long
+    Dim strCountIfCol As String
+    Dim rngCell As Range
+     
+    Application.ScreenUpdating = False
+    lngLastRow = Range("A:A").Find("*", SearchOrder:=xlByRows, SearchDirection:=xlPrevious).row
+    lngLastCol = Cells.Find(What:="*", After:=[A1], SearchOrder:=xlByColumns, SearchDirection:=xlPrevious).Column
+     
+     'Clear any existing formatting
+    With Range(Cells(1, 1), Cells(lngLastRow, lngLastCol)).Interior
+        .Pattern = xlNone
+        .TintAndShade = 0
+        .PatternTintAndShade = 0
+    End With
+     
+     'Create a COUNTIF key
+    Range(Cells(1, lngLastCol + 1), Cells(lngLastRow, lngLastCol + 1)).Formula = "=A1&A1"
+    strCountIfCol = Cells(1, lngLastCol + 1).Address(False, False)
+    strCountIfCol = Left(strCountIfCol, Len(strCountIfCol) - 1)
+     
+     'Count the occurrances of the COUNTIF key created above.
+    Range(Cells(1, lngLastCol + 2), Cells(lngLastRow, lngLastCol + 2)).Formula = "=COUNTIF($" & strCountIfCol & "$1:$" & strCountIfCol & "$" & lngLastRow & "," & strCountIfCol & "1)"
+     
+    For Each rngCell In Range(Cells(1, lngLastCol + 2), Cells(lngLastRow, lngLastCol + 2))
+        If rngCell.Value > 1 Then
+            Range(Cells(rngCell.row, 1), Cells(rngCell.row, lngLastCol)).Interior.Color = RGB(0, 255, 0) 'Colour duplicates green. Change to RGB setting suit.
+        End If
+    Next rngCell
+     
+     'Delete COUNTIF key and COUNTIF formula columns
+    Union(Columns(lngLastCol + 1), Columns(lngLastCol + 2)).EntireColumn.Delete
+     
+    Application.ScreenUpdating = True
+     
+End Sub
+----------------------------------------------------------------------------------------------
+HIGHLIGHT ALL CELLS CONTAINING DUPLICATES IN ONE COLUMN 
+Sub Grouping()
+
+
+Dim row As Integer
+
+Dim TestCell As String
+Dim first As String
+Dim Second As String
+
+Dim TestCell1 As String
+Dim lastcell As Integer
+
+Dim Report As Worksheet
+Set Report = Excel.Worksheets("060513")
+
+
+lastcell = Sheets("060513").Cells(ROWS.Count, "A").End(xlUp).row
+
+For row = 1 To lastcell
+    TestCell = "A" & CInt(row)
+    TestCell1 = "A" & (CInt(row) + 1)
+    first = Range(TestCell).Value
+    Second = Range(TestCell1).Value
+
+    If first = Second Then
+        Report.Cells(row, 1).Interior.ColorIndex = 3
+        Report.Cells(row + 1, 1).Interior.ColorIndex = 3
+    End If
+Next row
+End Sub
+-----------------------------------------------------------------------------------------------------
+COPY INFO FROM COLUMN D IF VALUE IN COLUMN C MATCHES WITH COLUMN A OF OTHER WB 
+=MAX(IF([Book1.xlsx]Sheet1!$C$22:$C$3014=A2,[Book1.xlsx]Sheet1!$D$22:$D$3014," "))
+
+THEN CTRL; SHIFT ENTER 
