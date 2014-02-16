@@ -5,7 +5,7 @@
 // Lin Hailu 
 // hailu
 
-//Houses the class for running this games
+//Houses the class for running this game
 public class FroggerRunner {
     ExamplesFrogger ef = new ExamplesFrogger();
 
@@ -13,7 +13,7 @@ public class FroggerRunner {
         return this.ef.myWorld.bigBang(800, 650, 0.1);
     }
 
-    // invoke this method to run the apple orchard game
+    // invoke this method to run the frogger game
     public static void main(String[] argv) {
         FroggerRunner fr = new FroggerRunner();
         fr.run();
