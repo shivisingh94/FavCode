@@ -1,17 +1,5 @@
-/* 
- * Shivi Singh 
- * singh.sh@husky.neu.edu
- * Fun Homework! However, I was not able to implement as specifically and 
- * thoroughly as I wanted to. Wish we were not assigned this during break as 
- * tutor help was vital also was not familiar with concept of console use going 
- * in.Really wish we had more time! We had 3 weeks for  Black Red trees and 
- * think this should have had 2 weeks.Otherwise, I really learned a lot from 
- * this assignment -- great little sneak peek into software designing!
- */
-
 /**
- * @author Shivi Singh 
- * @version Dec 4 2013 v1.0 
+ * @author Shivi Singh
  *
  */
 public class Show {
