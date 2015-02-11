@@ -3,7 +3,6 @@ import java.io.*;
 
 /**
  * @author Shivi Singh 
- * @version Dec 4 2013 v1.0 
  *
  */
 public class TicketSales {
