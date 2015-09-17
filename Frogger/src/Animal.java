@@ -2,8 +2,7 @@
 // Pair 107
 // Singh Shivanjali
 // ssingh94
-// Lin Hailu 
-// hailu
+
 
 
 import javalib.worldimages.*;
