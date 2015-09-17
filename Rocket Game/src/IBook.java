@@ -2,8 +2,7 @@
 // Pair 012
 // Singh Shivanjali
 // ssingh94
-// Patel Premal
-// Premal16
+
 public interface IBook {
 }
 
