@@ -258,6 +258,7 @@ class StringByLex implements Comparator<String> {
     /**
      * Equals method to check if this class equals another object
      * 
+     * 
      * @param o
      *            Object to which this class is being compared
      * @return boolean as to whether this and the given object are equal
