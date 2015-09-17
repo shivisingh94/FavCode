@@ -2,8 +2,6 @@
 // Pair 012
 // Singh Shivanjali
 // ssingh94
-// Patel Premal
-// Premal16
 
 import java.awt.Color;
 import java.util.Random;
